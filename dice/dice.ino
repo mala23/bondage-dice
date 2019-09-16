@@ -1,4 +1,11 @@
+#include <PubSubClient.h>
+#include <WiFi.h>
+
+const char* ssid = "The Grand Blossom 27A";
+const char* password =  "TGB_guest27a";
+
 const int statusLED = LED_BUILTIN;
+
 const int switchTilt01 = 26;
 const int switchTilt02 = 25;
 const int switchTilt03 = 34;
@@ -14,8 +21,21 @@ int val5 = 0;
 int val6 = 0;
 
 void setup() {
-  Serial.println("Initialised...");
+
+  // Initialize serial
+  Serial.begin(9600);
+ 
+  WiFi.begin(ssid, password);
+ 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("Connecting to WiFi..");
+  }
+ 
+  Serial.println("Connected to the WiFi network");
+  
   pinMode (statusLED, OUTPUT);
+  
   pinMode (switchTilt01, INPUT);
   pinMode (switchTilt02, INPUT);
   pinMode (switchTilt03, INPUT);
