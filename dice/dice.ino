@@ -1,81 +1,90 @@
-#include <PubSubClient.h>
+#include <ArduinoOSC.h>
 #include <WiFi.h>
+#include <ESPmDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
-const char* ssid = "The Grand Blossom 27A";
-const char* password =  "TGB_guest27a";
+const char* ssid = "kali";
+const char* password = "WoollyBugger837";
 
-const int statusLED = LED_BUILTIN;
+OscWiFi osc;
 
-const int switchTilt01 = 26;
-const int switchTilt02 = 25;
-const int switchTilt03 = 34;
-const int switchTilt04 = 39;
-const int switchTilt05 = 36;
-const int switchTilt06 = 4;
 
-int val1 = 0;
-int val2 = 0;
-int val3 = 0;
-int val4 = 0;
-int val5 = 0;
-int val6 = 0;
+//variabls for blinking an LED with Millis
+const int led = 13; // ESP32 Pin to which onboard LED is connected
+unsigned long previousMillis = 0;  // will store last time LED was updated
+const long interval = 500;  // interval at which to blink (milliseconds)
+int ledState = LOW;  // ledState used to set the LED
 
 void setup() {
 
-  // Initialize serial
-  Serial.begin(9600);
- 
+  pinMode(led, OUTPUT);  
+  Serial.begin(115200);
+  Serial.println("Booting");
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
- 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println("Connecting to WiFi..");
+  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.println("Connection Failed! Rebooting...");
+    delay(5000);
+    ESP.restart();
   }
- 
-  Serial.println("Connected to the WiFi network");
-  
-  pinMode (statusLED, OUTPUT);
-  
-  pinMode (switchTilt01, INPUT);
-  pinMode (switchTilt02, INPUT);
-  pinMode (switchTilt03, INPUT);
-  pinMode (switchTilt04, INPUT);
-  pinMode (switchTilt05, INPUT);
-  pinMode (switchTilt06, INPUT);
 
-  Serial.begin(9600);
+  // Port defaults to 3232
+  // ArduinoOTA.setPort(3232);
 
+  // Hostname defaults to esp3232-[MAC]
+  // ArduinoOTA.setHostname("myesp32");
+
+  // No authentication by default
+  // ArduinoOTA.setPassword("admin");
+
+  // Password can be set with it's md5 value as well
+  // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
+  // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
+
+  ArduinoOTA
+    .onStart([]() {
+      String type;
+      if (ArduinoOTA.getCommand() == U_FLASH)
+        type = "sketch";
+      else // U_SPIFFS
+        type = "filesystem";
+
+      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+      Serial.println("Start updating " + type);
+    })
+    .onEnd([]() {
+      Serial.println("\nEnd");
+    })
+    .onProgress([](unsigned int progress, unsigned int total) {
+      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    })
+    .onError([](ota_error_t error) {
+      Serial.printf("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+      else if (error == OTA_END_ERROR) Serial.println("End Failed");
+    });
+
+  ArduinoOTA.begin();
+
+  Serial.println("Ready");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
 }
 
 void loop() {
-  val1 = digitalRead(switchTilt01);
-  val2 = digitalRead(switchTilt02);
-  val3 = digitalRead(switchTilt03);
-  val4 = digitalRead(switchTilt04);
-  val5 = digitalRead(switchTilt05);
-  val6 = digitalRead(switchTilt06);
-  
-  if (val1 == LOW) {
-    Serial.println("Side 1");
-  }
-
-  if (val2 == LOW) {
-    Serial.println("Side 2");
-  }
-  
-  if (val3 == LOW) {
-    Serial.println("Side 3");
-  }
-  
-  if (val4 == LOW) {
-    Serial.println("Side 4");
-  }
-
-  if (val5 == LOW) {
-    Serial.println("Side 5");
-  }
-
-  if (val6 == LOW) {
-    Serial.println("Side 6");
+  ArduinoOTA.handle();  
+  //loop to blink without delay
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+  // save the last time you blinked the LED
+  previousMillis = currentMillis;
+  // if the LED is off turn it on and vice-versa:
+  ledState = not(ledState);
+  // set the LED with the ledState of the variable:
+  digitalWrite(led,  ledState);
   }
 }
