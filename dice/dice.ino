@@ -21,6 +21,11 @@ int val4 = 0;
 int val5 = 0;
 int val6 = 0;
 
+//Initiate led pins
+const int ledStripR = 13;
+const int ledStripG = 12;
+const int ledStripB = 27;
+
 WiFiClient net;
 MQTTClient client;
 
@@ -43,6 +48,21 @@ void connect() {
 
   client.subscribe("/liberatehongkong");
   // client.unsubscribe("/hello");
+}
+
+void blinkTest() {
+  digitalWrite(ledStripR, HIGH);
+  delay(500);
+  digitalWrite(ledStripR,LOW);
+  delay(5);
+  digitalWrite(ledStripG, HIGH);
+  delay(500);
+  digitalWrite(ledStripG,LOW);
+  delay(5);
+  digitalWrite(ledStripB, HIGH);
+  delay(500);
+  digitalWrite(ledStripB,LOW);
+  delay(5);
 }
 
 void messageReceived(String &topic, String &payload) {
