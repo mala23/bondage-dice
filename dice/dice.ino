@@ -65,6 +65,33 @@ void blinkTest() {
   delay(5);
 }
 
+void idleCheck() {
+  return true;
+  /*
+  val1new = digitalRead(switchTilt01);
+  if (val1new == val1) {
+    return true;
+  } else return false;
+  */
+}
+
+void idle() {
+  if (idleCheck() == true) {
+    digitalWrite(ledStripR, HIGH);
+    digitalWrite(ledStripG, HIGH);
+    digitalWrite(ledStripB, HIGH);
+    delay(500);
+    digitalWrite(ledStripR, LOW);
+    digitalWrite(ledStripG, LOW);
+    digitalWrite(ledStripB, LOW);
+    delay(200);
+  }
+}
+
+void shake() {
+
+}
+
 void messageReceived(String &topic, String &payload) {
   Serial.println("incoming: " + topic + " - " + payload);
 }
@@ -94,6 +121,8 @@ void setup() {
 }
 
 void loop() {
+  /*
+  //MQTT
   client.loop();
   delay(10);  // <- fixes some issues with WiFi stability
 
@@ -106,6 +135,7 @@ void loop() {
     lastMillis = millis();
     client.publish("/liberatehongkong", "liberatehonkong");
   }
+  */
   
   //Read tiltswitches
   val1 = digitalRead(switchTilt01);
@@ -115,33 +145,40 @@ void loop() {
   val5 = digitalRead(switchTilt05);
   val6 = digitalRead(switchTilt06);
 
+  //Shake
+  if (val1 == LOW)
+
+  /*
+  //Roll
   if (val1 == LOW) {
     Serial.println("Side 1");
-    client.publish("/dice", "1");
+    //client.publish("/dice", "1");
   }
 
   if (val2 == LOW) {
     Serial.println("Side 2");
-    client.publish("/dice", "2");
+    //client.publish("/dice", "2");
   }
     
   if (val3 == LOW) {
     Serial.println("Side 3");
-    client.publish("/dice", "3");
+    //client.publish("/dice", "3");
   }
     
   if (val4 == LOW) {
     Serial.println("Side 4");
-    client.publish("/dice", "4");
+    //client.publish("/dice", "4");
   }
 
   if (val5 == LOW) {
     Serial.println("Side 5");
-    client.publish("/dice", "5");
+    //client.publish("/dice", "5");
   }
 
   if (val6 == LOW) {
     Serial.println("Side 6");
-    client.publish("/dice", "6");
+    //client.publish("/dice", "6");
   }
+  */
+
 }
