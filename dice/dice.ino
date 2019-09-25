@@ -114,24 +114,37 @@ void shake() {
   } 
   // fade from red to yellow
   for (g = 0; g < 256; g++) { 
-    analogWrite(ledStripB, g);
+    analogWrite(ledStripR, g);
     delay(fadespeed);
   } 
   // fade from yellow to green
   for (r = 255; r > 0; r--) { 
-    analogWrite(REDPIN, r);
+    analogWrite(ledStripB, r);
     delay(fadespeed);
   } 
   // fade from green to teal
   for (b = 0; b < 256; b++) { 
-    analogWrite(BLUEPIN, b);
+    analogWrite(ledStripG, b);
     delay(fadespeed);
   } 
   // fade from teal to blue
   for (g = 255; g > 0; g--) { 
-    analogWrite(GREENPIN, g);
+    analogWrite(ledStripG, g);
     delay(fadespeed);
   }
+
+/*
+  if(idlecheck() == true) {
+    roll();
+  }
+*/
+  roll();
+}
+
+void roll() {
+  analogWrite(ledStripR, 255);
+  analogWrite(ledStripG, 10);
+  analogWrite(ledStripB, 50);
 }
 
 void messageReceived(String &topic, String &payload) {
@@ -190,7 +203,6 @@ void loop() {
   //Shake
   if (idleCheck() != true) {
     shake();
-    roll();
   }
 
   /*
