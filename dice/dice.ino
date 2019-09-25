@@ -100,8 +100,37 @@ void idle() {
 }
 
 void shake() {
-  if (idleCheck() != true) {
-
+  int r, g, b;
+	 
+  // fade from blue to violet
+  for (r = 0; r < 256; r++) { 
+    analogWrite(ledStripR, r);
+    delay(fadespeed);
+  } 
+  // fade from violet to red
+  for (b = 255; b > 0; b--) { 
+    analogWrite(ledStripG, b);
+    delay(fadespeed);
+  } 
+  // fade from red to yellow
+  for (g = 0; g < 256; g++) { 
+    analogWrite(ledStripB, g);
+    delay(fadespeed);
+  } 
+  // fade from yellow to green
+  for (r = 255; r > 0; r--) { 
+    analogWrite(REDPIN, r);
+    delay(fadespeed);
+  } 
+  // fade from green to teal
+  for (b = 0; b < 256; b++) { 
+    analogWrite(BLUEPIN, b);
+    delay(fadespeed);
+  } 
+  // fade from teal to blue
+  for (g = 255; g > 0; g--) { 
+    analogWrite(GREENPIN, g);
+    delay(fadespeed);
   }
 }
 
@@ -159,7 +188,10 @@ void loop() {
   val6 = digitalRead(switchTilt06);
 
   //Shake
-  if (val1 == LOW)
+  if (idleCheck() != true) {
+    shake();
+    roll();
+  }
 
   /*
   //Roll
