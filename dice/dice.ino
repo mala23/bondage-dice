@@ -26,6 +26,18 @@ const int ledStripR = 13;
 const int ledStripG = 12;
 const int ledStripB = 27;
 
+//Colours
+const int[] white = [255, 255, 255];
+const int[] off = [0, 0, 0];
+const int[] devotion = [255, 10, 50];
+const int[] control = [10, 50, 255];
+const int[] tieupagainst = [10, 255, 50];
+const int[] communication = [255, 50, 10];
+const int[] whatisviolence = [50, 10, 255];
+const int[] groupchallenge = [50, 255, 10];
+
+#define fadespeed 5
+
 WiFiClient net;
 MQTTClient client;
 
@@ -77,19 +89,20 @@ void idleCheck() {
 
 void idle() {
   if (idleCheck() == true) {
-    digitalWrite(ledStripR, HIGH);
-    digitalWrite(ledStripG, HIGH);
-    digitalWrite(ledStripB, HIGH);
-    delay(500);
-    digitalWrite(ledStripR, LOW);
-    digitalWrite(ledStripG, LOW);
-    digitalWrite(ledStripB, LOW);
-    delay(200);
+    int r;
+    for (r = 0; r < 256; r++) { 
+      analogWrite(ledStripR, r);
+      analogWrite(ledStripG, r);
+      analogWrite(ledStripB, r);
+      delay(fadespeed);
+    } 
   }
 }
 
 void shake() {
+  if (idleCheck() != true) {
 
+  }
 }
 
 void messageReceived(String &topic, String &payload) {
