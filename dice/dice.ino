@@ -21,6 +21,14 @@ int val4 = 0;
 int val5 = 0;
 int val6 = 0;
 
+//Initiate tiltswitch values previous
+int valPrev1 = 0;
+int valPrev2 = 0;
+int valPrev3 = 0;
+int valPrev4 = 0;
+int valPrev5 = 0;
+int valPrev6 = 0;
+
 //Initiate led pins
 const int ledStripR = 13;
 const int ledStripG = 12;
@@ -80,8 +88,7 @@ void blinkTest() {
 void idleCheck() {
   return true;
   /*
-  val1new = digitalRead(switchTilt01);
-  if (val1new == val1) {
+  if (valPrev1 == val1 && valPrev2 == val2) {
     return true;
   } else return false;
   */
@@ -193,6 +200,13 @@ void loop() {
   */
   
   //Read tiltswitches
+  valPrev1 = val1;
+  valPrev2 = val1;
+  valPrev3 = val1;
+  valPrev4 = val1;
+  valPrev5 = val1;
+  valPrev1 = val1;
+
   val1 = digitalRead(switchTilt01);
   val2 = digitalRead(switchTilt02);
   val3 = digitalRead(switchTilt03);
